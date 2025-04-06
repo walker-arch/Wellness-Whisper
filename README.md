@@ -19,8 +19,8 @@ Ensure you have the following installed on your system:
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/jeevan221/wellness-wisper.git
-   cd wellness-wisper
+   git clone https://github.com/walker-arch/Wellness-Whisper.git
+   cd Wellness-Whisper
    ```
 2. Install dependencies:
    ```bash
