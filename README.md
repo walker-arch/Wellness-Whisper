@@ -56,8 +56,6 @@ Contributions are welcome! To contribute:
 4. Push to the branch (`git push origin feature-branch-name`).
 5. Open a pull request.
 
-## License
-This project is licensed
 
 ## Contact
 For any inquiries or issues, feel free to reach out:
