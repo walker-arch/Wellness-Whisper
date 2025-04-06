@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz with Categories</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('199.jpeg'); /* Replace 'path_to_your_image.jpg' with the actual path to your background image */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #4a4e73;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #040828;
+        }
+
+        button:disabled {
+            background-color: #ddd;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .category-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            
+        }
+
+        .pressure-bars {
+            margin-top: 20px;
+        }
+
+        .pressure-bar {
+            background-color: #5b4d8a;
+            height: 30px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .percentage-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Wellness Whisper</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="world.html">About</a>
+            </li>
+    
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                More..
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="stress.html">Stress Scale</a>
+                <a class="dropdown-item" href="consultant.html">Consultant Meeting</a>
+                <a class="dropdown-item" href="#"></a>
+    
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Support</a>
+                <a class="dropdown-item" href="#">Write for us</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact.html">Contact Us</a>
+            </li>
+    
+    
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+          </form>
+          <div class="mx-2">
+            <button class="btn btn-danger" data-toggle="modal" data-target="#loginModal">Login</button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#signupModal">SignUp</button>
+          </div>
+        </div>
+      </nav>
+    
+    <div class="container mt-5">
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 class="text-dark">Question</h2>
+                <p id="question" class="text-dark"></p>
+                <label><input type="radio" name="answer" value="yes"> Yes</label>
+                <label><input type="radio" name="answer" value="no"> No</label>
+                <br><br>
+                <button onclick="checkAnswer()" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        <div class="category-buttons">
+            <button id="btnA" onclick="startCategory('Physical_Stress')" class="btn btn-primary">Physical Stress</button>
+            <button id="btnB" onclick="startCategory('Frustration')" class="btn btn-primary">Frustration</button>
+            <button id="btnC" onclick="startCategory('Anxiety')" class="btn btn-primary">Anxiety</button>
+            <button id="btnD" onclick="startCategory('Pressure')" class="btn btn-primary">Pressure</button>
+        </div>
+        <div id="result" class="pressure-bars"></div>
+    </div>
+    <script>
+        let currentQuestion = 0;
+        let quizCompleted = false;
+        let categoryScores = { Physical_Stress: 0, Frustration: 0, Anxiety: 0, Pressure: 0 };
+        let completedCategories = [];
+        const quizData = [
+            { category: 'Physical_Stress', question: "Do you often have headaches?" },
+            { category: 'Physical_Stress', question: "Do you often feel mentally or physically tired?" },
+            { category: 'Physical_Stress', question: "After studying for a while, do your hands and feet start twitching?" },
+            { category: 'Physical_Stress', question: "Do you not feel refreshed even after waking up in the morning?" },
+            { category: 'Frustration', question: "Do you often feel irritable?" },
+            { category: 'Frustration', question: "Do you lose your temper quickly?" },
+            { category: 'Frustration', question: "Do failures discourage you quickly?" },
+            { category: 'Frustration', question: "Do you lose control during any kind of argument?" },
+            { category: 'Anxiety', question: "Do you not fall asleep for a long time even after going to sleep?" },
+            { category: 'Anxiety', question: "Do you often feel guilty?" },
+            { category: 'Anxiety', question: "Have you faced embarrassment many times?" },
+            { category: 'Anxiety', question: "Do you feel helpless?" },
+            { category: 'Anxiety', question: "Are you unable to concentrate on your work?" },
+            { category: 'Anxiety', question: "Do you remain very worried about the future?" },
+            { category: 'Pressure', question: "Do you find studies a burden?" },
+            { category: 'Pressure', question: "Do you have to struggle to keep up with the pace of time?" },
+            { category: 'Pressure', question: "Is there a mistake in spite of doing some work carefully?" },
+            { category: 'Pressure', question: "Do you smoke or consume alcohol?" },
+            { category: 'Pressure', question: "Do you find it difficult to take quick decisions?" },
+            { category: 'Pressure', question: "Do you work under time pressure?" },
+            { category: 'Pressure', question: "Do you think your parents expect/expect more than you need?" }
+        ];
+
+        function startCategory(category) {
+            currentQuestion = 0;
+            quizCompleted = false;
+            categoryScores = { Physical_Stress: 0, Frustration: 0, Anxiety: 0, Pressure: 0 };
+            openModal(category);
+        }
+
+        function openModal(category) {
+            const modal = document.getElementById('myModal');
+            const questionText = document.getElementById('question');
+            const radioInputs = document.getElementsByName('answer');
+
+            if (!quizCompleted) {
+                const filteredQuestions = quizData.filter(item => item.category === category);
+                if (currentQuestion < filteredQuestions.length) {
+                    questionText.textContent = filteredQuestions[currentQuestion].question;
+                    radioInputs.forEach(input => input.checked = false); // Clear previous selection
+                    modal.style.display = 'block';
+                } else {
+                    calculateResult(category); // Calculate and show the result
+                    completedCategories.push(category); // Track completed categories
+                    if (completedCategories.length === 4) {
+                        checkOverallResult(); // Check if all categories are completed
+                    }
+                    quizCompleted = true;
+                    modal.style.display = 'none';
+                }
+            } else {
+                alert('You have already attended this quiz.');
+            }
+        }
+
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('myModal').style.display = 'none';
+        });
+
+        function checkAnswer() {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (selectedAnswer) {
+                const questionCategory = quizData.find(item => item.question === document.getElementById('question').textContent).category;
+                if (selectedAnswer.value === 'yes') {
+                    categoryScores[questionCategory]++;
+                }
+            }
+            currentQuestion++;
+            document.getElementById('myModal').style.display = 'none';
+            const currentCategory = document.getElementById('question').textContent ? quizData.find(item => item.question === document.getElementById('question').textContent).category : null;
+            openModal(currentCategory); // Move to the next question
+        }
+
+        function calculateResult(category) {
+            const categoryScore = categoryScores[category];
+            const totalQuestions = quizData.filter(item => item.category === category).length;
+            const percentage = (categoryScore / totalQuestions) * 100;
+            const resultText = `
+                <div class="pressure-bars">
+                    <h3>${category} Level:</h3>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: ${percentage}%" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100">${percentage.toFixed(2)}%</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('result').innerHTML += resultText;
+
+            // Disable the button for the completed category
+            document.getElementById('btn${category}').disabled = true;
+        }
+        
+    </script>
+
+</body>
+
+</html>

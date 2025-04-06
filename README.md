@@ -19,8 +19,8 @@ Ensure you have the following installed on your system:
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/walker-arch/Wellness-Whisper.git
-   cd Wellness-Whisper
+   git clone https://github.com/jeevan221/wellness-wisper.git
+   cd wellness-wisper
    ```
 2. Install dependencies:
    ```bash
@@ -56,9 +56,9 @@ Contributions are welcome! To contribute:
 4. Push to the branch (`git push origin feature-branch-name`).
 5. Open a pull request.
 
+## License
+This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 For any inquiries or issues, feel free to reach out:
-- **Email**: [1021sandeepkumar@gmail.com](mailto:1021sandeepkumar@gmail.com)
-- **Email**: [mohitpundir099@gmail.com](mailto:mohitpundir099@gmail.com)
-- **Email**: [adityagoyal3664@gmail.com](mailto:adityagoyal3664@gmail.com)
+- **Email**: [rautelajeevan123@gmail.com](mailto:rautelajeevan123@gmail.com)
